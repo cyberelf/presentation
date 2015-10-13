@@ -1,0 +1,329 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>Docker</title>
+
+        <meta name="description" content="Open platform for application and enviroment management and distribution">
+        <meta name="author" content="Darren Zhao">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/sky.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+    </head>
+
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <!-- Title page #1 -->
+                <section>
+                    <h1>Docker 介绍</h1>
+                    <p>
+                        <small>By <a href="mailto:gyzhao@hillstonenet.com">Darren Zhao</a></small>
+                    </p>
+                </section>
+
+                <!-- #2 -->
+                <section>
+                    <section>
+                        <h2>What is Docker?</h2>
+                        <img src="images/docker.png" class="fragment">
+                    </section>
+                    <section>
+                        <h2>What is Docker?</h2>
+                        <p>"An open platform for distributed applications for developers and sysadmins"</p>
+                        <p>A system managing containers</p>
+                        <p>Most popular PAAS solution</p>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>What Docker Can do</h2>
+                        <ul>
+                            <li>Run a single application or service</li>
+                            <li>Share your image with others via register server or tar ball</li>
+                            <li>Can be used on popular cloud platforms: aws, Google Compute Engine, Rackspace</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>What it cannot?</h2>
+                        <ul>
+                            <li>It cannnot run windows applications</li>
+                            <li>Cannot run with Linux kernel less than 3.8</li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Why Docker</h2>
+                        <ul>
+                            <li>Applications, services, libraries Matrix</li>
+                            <li>Software and hardware matrix</li>
+                        </ul>
+                        <img src="images/matrix.png" class="fragment">
+                    </section>
+                    <section>
+                        <h2>Why Docker</h2>
+                        <img src="images/docked.png">
+                    </section>
+                </section>
+
+                <section>
+                    <section>
+                    <h1>How Docker works</h1>
+                    </section>
+
+                    <section>
+                        <h2>Docker Architecture</h2>
+                        <ul>
+                            <li>Docker Engine</li>
+                            <ul>
+                                <li>CLI: docker, frontend to accept user input and send commands to daemon</li>
+                                <li>docker daemon: the backend manages containers</li>
+                                <li>docker registry: a container that manages docker images</li>
+                            </ul>
+                            <li>Docker image: layered fs (aufs)</li>
+                            <li>Container: a running instance of image. Formerly use lxc, completely rewritten now</li>
+                            <li>Docker hub: cloud service hosts/share docker images, like github to git</li>
+                            <li>Kitematic: Docker GUI client</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Docker Images</h2>
+                        <img src="images/layeredfs.png">
+                        <ul>
+                            <li>a read-only layer</li>
+                            <li>Supports different backends</li>
+                            <ul>
+                                <li>vfs: folders, no copy-on-write support, recursive copy</li>
+                                <li>devicemapper: thin-provisioned vhd, filesystem level layers</li>
+                                <li>btrfs: filesystem level layers</li>
+                                <li>aufs: file level layers</li>
+                            </ul>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Docker Container</h2>
+                        <ul>
+                            <li>First of all a Linux container: Utilize Linux Cgroups and Kernel namespace</li>
+                            <li>Supports different backends</li>
+                            <ul>
+                                <li>native docker lib: libcontainer</li>
+                                <li>libvirt</li>
+                                <li>lxc</li>
+                                <li>systemd-nspawn</li>
+                            </ul>
+                            <li>fs: a writable layer</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Docker Container - Life Cycle</h2>
+                        <ul>
+                            <li>Conception: Build an Image from a Dockerfile</li>
+                            <li>Brith: Run a container</li>
+                            <li>Reproduction: Commit (persist) a container to a new image</li>
+                            <li>Sleep: Kill a running container</li>
+                            <li>Wake: Start a stopped container</li>
+                            <li>Death: RM (delete) a stopped container</li>
+                            <li>Extinction: RMI a container image (delete image)</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Docker file</h2>
+                        <ul>
+                            <li>Like a Makefile (shell script with keywords)</li>
+                            <li>Extends from a Base Image</li>
+                            <li>Results in a new Docker Image</li>
+                            <li>lists the steps needed to build an images</li>
+                        </ul>
+                        <img src="images/dockerfile.png">
+                    </section>
+
+                    <section>
+                        <h2><a href="https://docs.docker.com/articles/networking/">Docker network</a></h2>
+                        <ul>
+                            <li>Veth based: eth0 inside container and vethxxxx in host</li>
+                            <li>Bridge docker0</li>
+                            <li>Not directly tunable</li>
+                            <li><pre><code>➜  ~ pid=`docker inspect -f '{{.State.Pid}}' $container_id`
+➜  ~ ln -s /proc/$pid/ns/net /var/run/netns/$container_id
+                            </code></pre></li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2>Docker commands</h2>
+                        <img src="images/commands.png">
+                    </section>
+
+                    <section>
+                        <h2>Docker Community &amp; Activity</h2>
+                        <ul>
+                            <li><a href="http://www.dockercon.com/">DockerCon</a></li>
+                            <li><a href="http://www.meetup.com/docker-beijing">Docker Meetup</a></li>
+                        </ul>
+                    </section>
+
+                </section>
+
+                <section>
+                    <section><h1>More About Containers</h1></section>
+                    <section>
+                        <h2>Technology set</h2>
+                        <ul>
+                            <li>namespaces: process isolation</li>
+                            <li><a href='https://www.kernel.org/doc/Documentation/cgroups/cgroups.txt'>cgroups</a>: resource limitation</li>
+                            <li><a href='http://man7.org/linux/man-pages/man7/capabilities.7.html'>capabilities</a>: process privilege</li>
+                            <li>selinux/apparmor: security enforcement</li>
+                            <li>netlink: configure network</li>
+                            <li>netfilter: network perimeter</li>
+                            <li>...</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>namespace</h2>
+                        <p>Restrict your view of the system. Set on process clone</p>
+                        <ul>
+                            <li>PID (CLONE_NEWPID)</li>
+                            <li>IPC (CLONE_NEWIPC)</li>
+                            <li>Mounts (CLONE_NEWNS)</li>
+                            <li>Networks (CLONE_NEWNET)</li>
+                            <li>UTS - uname output (CLONE_NEWUTS)</li>
+                            <li>User (<a href='http://lwn.net/Articles/528078/'>CLONE_NEWUSER</a>)*</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Cgroups</h2>
+                        <ul>
+                            <li>Allocate resources—such as CPU time, system memory, network bandwidth, or combinations of these resources—among user-defined groups of tasks (processes) running on a system</li>
+                            <li>By associate a set of tasks with a set of parameters for one or more subsystems</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Cgroups - subsystems</h2>
+                        <p align='left'><small>A *subsystem* is a module that makes use of the task grouping facilities provided by cgroups to treat groups of tasks in particular ways. A subsystem is typically a "resource controller" that schedules a resource or applies per-cgroup limits, but it may be anything that wants to act on a group of processes, e.g. a virtualization subsystem.</small></p>
+                        <pre><code>
+~]# lssubsys -am
+cpu,cpuset,memory /cgroup/cpu_and_mem
+net_cls
+ns
+cpuacct
+devices
+freezer
+blkio
+                        </code></pre>
+                    </section>
+                    
+                    <section>
+                        <h2>Hypervisor vs Docker</h2>
+                        <img src="images/vm_vs_container.png">
+                    </section>
+
+                    <section>
+                        <h3>OS containers vs application container</h3>
+                        <p align='left'>LXC/LXD: Full system virtualization, target IAAS</p>
+                        <pre><code>root@lxcvm1:/# ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.2  0.0  33252  2528 ?        Ss   17:29   0:00 /sbin/init
+root       157  0.0  0.0  19476   392 ?        S    17:29   0:00 upstart-udev-bridge --daemon
+root       184  0.0  0.0  49268  1332 ?        Ss   17:29   0:00 /lib/systemd/systemd-udevd --daemon
+syslog     249  0.0  0.0 255844  3200 ?        Ssl  17:29   0:00 rsyslogd
+root       264  0.0  0.0  15392   788 ?        S    17:29   0:00 upstart-socket-bridge --daemon
+root       267  0.0  0.0  15276   644 ?        S    17:29   0:00 upstart-file-bridge --daemon
+root       299  0.0  0.0  10232  2412 ?        Ss   17:29   0:00 dhclient -1 -v -pf /run/dhclient.eth0.pid -lf /var/lib/dhcp/dhclient.eth0.leases eth0
+                        </code></pre>
+                        <p align='left'>Docker: application container, target PAAS</p>
+                        <pre><code>root@8adfb91c144b:/# ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.5  0.0  18172  1840 ?        Ss   09:40   0:00 /bin/bash
+root        17  0.0  0.0  15564  1144 ?        R+   09:40   0:00 ps aux
+                        </code></pre>
+                    </section>
+                </section>
+
+                <section>
+                    <h2>What Container means to us</h2>
+                    <ul>
+                        <li>Fast/resilliant testing/build infrastructure</li>
+                        <li>Higher density VMs</li>
+                        <li><a href="http://events.linuxfoundation.org/sites/events/files/slides/Jun_Nakajima_NFV_Container_final.pdf">A new choice for NFV</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Powered By:</h2>
+                    <p><a href="https://github.com/hakimel/reveal.js">reveal.js</a></p>
+                    <p><a href="https://www.leapmotion.com/">Leap Motion</a></p>
+                </section>
+                <section>
+                    <h1>Q &amp; A</h1>
+                </section>
+            </div>
+        </div>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                transition: 'convex', // none/fade/slide/convex/concave/zoom
+                leap: {
+                    naturalSwipe   : true,    // Invert swipe gestures
+                    pointerOpacity : 0.3,      // Set pointer opacity to 0.5
+                    gestureDelay   : 1000,
+                    autoCenter     : false
+                    //pointerColor   : '#d80000' // Red pointer
+                },
+                // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/leap/leap.js', async: true }
+                ]
+            });
+
+        </script>
+        <a class="logo" style="display: none;"><img style="position: absolute; top: 10px; right: 10px; border: 0;" src="images/logo.png"></a>
+
+        <script>
+            if( !navigator.userAgent.match( /(iphone|android)/gi ) && !!document.querySelector ) {
+                document.querySelector( '.logo' ).style.display = 'none';
+            }
+        </script>
+    </body>
+</html>
